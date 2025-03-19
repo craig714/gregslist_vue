@@ -1,4 +1,7 @@
 <script setup>
+import { housesService } from '@/services/HousesService.js';
+import { logger } from '@/utils/Logger.js';
+import { Pop } from '@/utils/Pop.js';
 import { ref } from 'vue';
 
 
@@ -13,16 +16,25 @@ const editableHouseData = ref({
   description:''
 })
 
-
+async function createHouse(){
+  try {
+    const houseData = editableHouseData.value
+    await housesService.createHouse(houseData)
+  }
+  catch (error){
+    Pop.error(error,'could not create a house');
+    logger.error('could not create the house',error)
+  }
+}
 
 
 </script>
 
 <template>
-  <form>
+  <form @submit.prevent="createHouse()">
     <div class="mb-3">
       <label for="houseBedrooms">Bedrooms</label>
-      <input
+      <input v-model="editableHouseData.bedrooms"
         id="houseBedrooms"
         type="number"
         required
@@ -32,7 +44,7 @@ const editableHouseData = ref({
     </div>
     <div class="mb-3">
       <label for="houseBathrooms">Bathrooms</label>
-      <input
+      <input v-model="editableHouseData.bathrooms"
         id="houseBathrooms"
         type="number"
         required
@@ -42,7 +54,7 @@ const editableHouseData = ref({
     </div>
     <div class="mb-3">
       <label for="houseLevels">Levels</label>
-      <input
+      <input v-model="editableHouseData.levels"
         id="houseLevels"
         type="number"
         required
@@ -52,7 +64,7 @@ const editableHouseData = ref({
     </div>
     <div class="mb-3">
       <label for="houseImgUrl">Img Url</label>
-      <input
+      <input v-model="editableHouseData.imgUrl"
         id="houseImgUrl"
         type="url"
         required
@@ -61,8 +73,18 @@ const editableHouseData = ref({
       />
     </div>
     <div class="mb-3">
+      <label for="houseYear">Year</label>
+      <input v-model="editableHouseData.year"
+        id="houseYear"
+        type="number"
+        required
+        maxlength="50"
+        placeholder="Year..."
+      />
+    </div>
+    <div class="mb-3">
       <label for="housePrice">Price</label>
-      <input
+      <input v-model="editableHouseData.price"
         id="housePrice"
         type="number"
         required
@@ -72,7 +94,7 @@ const editableHouseData = ref({
     </div>
     <div class="mb-3">
       <label for="houseDescription">Description</label>
-      <input
+      <input v-model="editableHouseData.description"
         id="houseDescription"
         type="text"
         required
